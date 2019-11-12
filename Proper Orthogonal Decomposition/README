@@ -1,0 +1,2 @@
+This project apply Proper Orthogonal Decomposition(POD) to transfer a PDE problem to a series of ODEs.
+Then, comparing the solution of the PDE and the ODEs to evaluate the accuracy of the POD.

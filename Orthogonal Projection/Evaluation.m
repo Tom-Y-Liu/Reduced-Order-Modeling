@@ -1,0 +1,186 @@
+%% Reduced-Order Modeling - Orthogonal Projection
+
+% Introduction
+% ------------
+% In this evaluation program, I will do orthogonal projection of three
+% funcitons f,g,h into 5 different bases, and evaluate the corresponding error.
+% The aim is to evaluate the influence of bases on orthogonal
+% decomposition.
+%
+% Functions:
+% f = x*exp(-x^2);
+% g = sin(pi*x)*cos(3*pi*x);
+% h = tanh(3*sin(pi*x)-cos(pi*x));
+%
+% Bases:
+% Base1: Constant Bases
+% Base2: Linear Bases
+% Base3: Monomial Bases
+% Base4: Legendre Bases
+% Base5: Fourier Bases
+%
+
+%% Initialization
+clear all;clc;close all
+LW = 'LineWidth';
+x = chebfun('x',[-1,1]);
+
+%% ===================== Part1:Plot Bases ================================
+% ==Const==
+N=6;
+U1 = Basis(N,'Const');
+for i=1:N
+    plot(U1(:,i));hold on
+end
+title('U1 Const Base')
+legend('N=1','N=2','N=3','N=4','N=5')
+% ==Linear==
+figure
+N=6;
+U2 = Basis(N,'Linear');
+for i=1:N
+    plot(U2(:,i));hold on
+end
+title('U2 Linear Base')
+legend('N=1','N=2','N=3','N=4','N=5')
+% ==Monomial==
+figure
+N=6;
+U3 = Basis(N,'Monomial');
+for i=1:N
+    plot(U3(:,i));hold on
+end
+title('U3 Monomial Base')
+legend('N=1','N=2','N=3','N=4','N=5')
+% ==Legendre==
+figure
+N=6;
+U4 = Basis(N,'Legendre');
+for i=1:N
+    plot(U4(:,i));hold on
+end
+title('U4 Legendre Base')
+legend('N=1','N=2','N=3','N=4','N=5')
+% ==Fourier==
+figure
+N=6;
+U5 = Basis(N,'Fourier');
+for i=1:N
+    plot(U5(:,i));hold on
+end
+title('U5 Fourier Base')
+legend('N=1','N=2','N=3','N=4','N=5')
+fprintf('Program paused, press Enter to continue.\n')
+pause;
+
+%% ==================== Part2:Orthogonal Basis ===========================
+% Chech if each basis is orthogonal or not
+f = CheckDiagnoal(U1'*U1);
+if f==0
+    fprintf('Const Base is not orthogonal.\n')
+else
+    fprintf('Const Base is orthogonal.\n')
+end
+f = CheckDiagnoal(U2'*U2);
+if f==0
+    fprintf('Linear Base is not orthogonal.\n')
+else
+    fprintf('Linear Base is orthogonal.\n')
+end
+f = CheckDiagnoal(U3'*U3);
+if f==0
+    fprintf('Monomial Base is not orthogonal.\n')
+else
+    fprintf('Monomial Base is orthogonal.\n')
+end
+f = CheckDiagnoal(U4'*U4);
+if f==0
+    fprintf('Legendre Base is not orthogonal.\n')
+else
+    fprintf('Legendre Base is orthogonal.\n')
+end
+f = CheckDiagnoal(U5'*U5);
+if f==0
+    fprintf('Fourier Base is not orthogonal.\n')
+else
+    fprintf('Fourier Base is orthogonal.\n')
+end
+
+%% ===================== Part3:Define Functions ==========================
+f = x*exp(-x^2);
+g = sin(pi*x)*cos(3*pi*x);
+h = tanh(3*sin(pi*x)-cos(pi*x));
+
+%% ===================== Part4:Reduction Error ===========================
+N=[1:5 10:5:50];
+% ========== Polt Error for f(x) ==========
+figure
+r_f=zeros(size(N,2),5);
+for n=1:size(N,2)
+    pf1 = Projection(f,N(n),'Const');
+    pf2 = Projection(f,N(n),'Linear');
+    pf3 = Projection(f,N(n),'Monomial');
+    pf4 = Projection(f,N(n),'Legendre');
+    pf5 = Projection(f,N(n),'Fourier');
+    r_f(n,1)=norm(f-pf1);
+    r_f(n,2)=norm(f-pf2);
+    r_f(n,3)=norm(f-pf3);
+    r_f(n,4)=norm(f-pf4);
+    r_f(n,5)=norm(f-pf5);
+end
+for i=1:5
+    semilogy(N,r_f(:,i),LW,2);hold on;
+end
+grid;
+legend('Const','Linaer','Monomial','Legendre','Fourier')
+title('Error for f(x)')
+xlabel('N')
+ylabel('Error')
+
+% ========== Polt Error for g(x) ==========
+figure
+r_g=zeros(size(N,2),5);
+for n=1:size(N,2)
+    pg1 = Projection(g,N(n),'Const');
+    pg2 = Projection(g,N(n),'Linear');
+    pg3 = Projection(g,N(n),'Monomial');
+    pg4 = Projection(g,N(n),'Legendre');
+    pg5 = Projection(g,N(n),'Fourier');
+    r_g(n,1)=norm(g-pg1);
+    r_g(n,2)=norm(g-pg2);
+    r_g(n,3)=norm(g-pg3);
+    r_g(n,4)=norm(g-pg4);
+    r_g(n,5)=norm(g-pg5);
+end
+for i=1:5
+    semilogy(N,r_g(:,i),LW,2);hold on;
+end
+grid;
+legend('Const','Linaer','Monomial','Legendre','Fourier')
+title('Error for g(x)')
+xlabel('N')
+ylabel('Error')
+
+% ========== Polt Error for h(x) ==========
+figure
+r_h=zeros(size(N,2),5);
+for n=1:size(N,2)
+    ph1 = Projection(h,N(n),'Const');
+    ph2 = Projection(h,N(n),'Linear');
+    ph3 = Projection(h,N(n),'Monomial');
+    ph4 = Projection(h,N(n),'Legendre');
+    ph5 = Projection(h,N(n),'Fourier');
+    r_h(n,1)=norm(h-ph1);
+    r_h(n,2)=norm(h-ph2);
+    r_h(n,3)=norm(h-ph3);
+    r_h(n,4)=norm(h-ph4);
+    r_h(n,5)=norm(h-ph5);
+end
+for i=1:5
+    semilogy(N,r_h(:,i),LW,2);hold on;
+end
+grid;
+legend('Const','Linaer','Monomial','Legendre','Fourier')
+title('Error for h(x)')
+xlabel('N')
+ylabel('Error')

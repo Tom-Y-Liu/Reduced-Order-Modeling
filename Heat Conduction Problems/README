@@ -1,0 +1,10 @@
+This project applied ROM method on Heat Conduction Problems. 
+By project governing equations of Heat Conduciton problems, those PDEs can be reducded into low dimension ODE probelms without 
+losing much accuracy.
+
+Please run ROM_HeatConduction as main program, which state the original Problem.
+
+Problems being considered in this project:
+1. Heat Diffusion
+2. Heat Advection-Diffusion
+3. Burgers Probem (NonLinear Probelm)
